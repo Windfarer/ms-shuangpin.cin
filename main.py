@@ -38,6 +38,7 @@ mapping = {
     'an': 'j',
     'k': 'k',
     'ao': 'k',
+    'l': 'l',
     'ai': 'l',
     'ing': ';',
     'z': 'z',
@@ -61,9 +62,12 @@ mapping = {
 class TrieTree(dict):
     def put(self, key):
         current = self
-        for letter in key:
+        key = list(key)
+        while key:
+            letter = key.pop(0)
             current.setdefault(letter, {})
             current = current[letter]
+        current.setdefault("_end")
 
     def search(self, key):
         current = self
@@ -71,7 +75,7 @@ class TrieTree(dict):
             if letter not in current:
                 return False
             current = current[letter]
-        if not current:
+        if "_end" in current:
             return True
         return False
 
@@ -80,7 +84,20 @@ def main():
     trie = TrieTree()
     for k in mapping:
         trie.put(k)
-
+    with open('resource.txt', 'rb') as f:
+        for line in f:
+            txt = line.decode('utf8')
+            a, b = txt.split()
+            p, q = 0, 1
+            parsed = []
+            while q <= len(a):
+                if not trie.search(a[p:q]):
+                    parsed.append(a[p:q-1])
+                    q -= 1
+                    p = q
+                q += 1
+            parsed += [a[p:q-1]]
+            print(parsed)
 if __name__ == '__main__':
     main()
 
