@@ -56,3 +56,31 @@ mapping = {
     'm': 'm',
     'ian': 'm'
 }
+
+
+class TrieTree(dict):
+    def put(self, key):
+        current = self
+        for letter in key:
+            current.setdefault(letter, {})
+            current = current[letter]
+
+    def search(self, key):
+        current = self
+        for letter in key:
+            if letter not in current:
+                return False
+            current = current[letter]
+        if not current:
+            return True
+        return False
+
+
+def main():
+    trie = TrieTree()
+    for k in mapping:
+        trie.put(k)
+
+if __name__ == '__main__':
+    main()
+
