@@ -1,3 +1,4 @@
+from itertools import chain
 mapping = {
     'q': 'q',
     'w': 'w',
@@ -10,6 +11,7 @@ mapping = {
     'er': 'r',
     't': 't',
     've': 't',
+    'ue': 't',
     'y': 'y',
     'uai': 'y',
     'v': 'y',
@@ -55,7 +57,8 @@ mapping = {
     'n': 'n',
     'in': 'n',
     'm': 'm',
-    'ian': 'm'
+    'ian': 'm',
+    "*": 'o',
 }
 
 
@@ -84,20 +87,48 @@ def main():
     trie = TrieTree()
     for k in mapping:
         trie.put(k)
-    with open('resource.txt', 'rb') as f:
+    # with open('resource.txt', 'rb') as f:
+    #     for line in f:
+    #         txt = line.decode('utf8')
+    #         a, b = txt.split()
+    #         p, q = 0, 1
+    #         parsed = []
+    #         while q <= len(a):
+    #             if not trie.search(a[p:q]):
+    #                 parsed.append(a[p:q-1])
+    #                 q -= 1
+    #                 p = q
+    #             q += 1
+    #         parsed += [a[p:q-1]]
+    #         print(parsed)
+    wf = open('dest.txt', 'w')
+    with open('resource2.txt', 'rb') as f:
+        x = 0
         for line in f:
-            txt = line.decode('utf8')
-            a, b = txt.split()
-            p, q = 0, 1
-            parsed = []
-            while q <= len(a):
-                if not trie.search(a[p:q]):
-                    parsed.append(a[p:q-1])
-                    q -= 1
-                    p = q
-                q += 1
-            parsed += [a[p:q-1]]
-            print(parsed)
+            a, b, _ = line.decode("utf8").split()
+            splited = b.split('|')
+            print(splited)
+            collected = []
+            for i in splited:
+                p = 1
+                while p <= len(i) and trie.search(i[:p]):
+                    p += 1
+                print(i[:p-1], i[p-1:])
+
+                if not i[p-1:]:
+                    collected.append(['*'])
+
+                collected.append([i[:p-1]])
+
+                if i[p-1:]:
+                    collected.append([i[p-1:]])
+
+            print(a, collected)
+            translated = "".join([mapping[i] for i in chain(*collected)])
+            print(translated)
+            wf.write("{} {}\n".format(translated, a))
+
+    wf.close()
 if __name__ == '__main__':
     main()
 
