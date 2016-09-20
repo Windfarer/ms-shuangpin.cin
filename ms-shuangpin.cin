@@ -31,8 +31,7 @@ z z
 ; ;
 %keyname end
 
-%AUTO_COMPOSE
-
+%PHRASE_CHARDEF
 %chardef begin
 < ，
 > 。
